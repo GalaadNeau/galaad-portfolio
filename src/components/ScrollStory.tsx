@@ -1,19 +1,40 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { type CSSProperties, useEffect, useMemo, useRef, useState } from 'react';
 
 type Milestone = {
   at: number;
   title: string;
   text: string;
+  tone: string;
 };
 
 const FRAME_COUNT = 72;
 const framePath = (index: number) => `/assets/frames/frame-${String(index).padStart(4, '0')}.jpg`;
 
 const milestones: Milestone[] = [
-  { at: 0.0, title: 'Act I — Spark', text: 'From rough ideas to clear strategic direction.' },
-  { at: 0.28, title: 'Act II — Build', text: 'Design systems and prototypes align product and brand.' },
-  { at: 0.58, title: 'Act III — Ship', text: 'Launch polished, performant experiences users remember.' },
-  { at: 0.82, title: 'Act IV — Scale', text: 'Iterate with data, refine craft, and compound outcomes.' }
+  {
+    at: 0,
+    title: 'Act I — Vision',
+    text: 'Distill ambition into a clear product narrative and visual north star.',
+    tone: '#cba8ff'
+  },
+  {
+    at: 0.28,
+    title: 'Act II — Direction',
+    text: 'Shape layout rhythm, typography scale, and emotional pacing across screens.',
+    tone: '#86b7ff'
+  },
+  {
+    at: 0.58,
+    title: 'Act III — Precision',
+    text: 'Engineer fluid interactions and high-performance rendering for real devices.',
+    tone: '#7adbc7'
+  },
+  {
+    at: 0.82,
+    title: 'Act IV — Momentum',
+    text: 'Launch, measure, and iterate into a compounding digital advantage.',
+    tone: '#ffc18f'
+  }
 ];
 
 function ScrollStory() {
@@ -52,13 +73,14 @@ function ScrollStory() {
 
       const imageAspect = image.width / image.height;
       const canvasAspect = width / height;
-
       const drawWidth = imageAspect > canvasAspect ? height * imageAspect : width;
       const drawHeight = imageAspect > canvasAspect ? height : width / imageAspect;
-
       const x = (width - drawWidth) / 2;
       const y = (height - drawHeight) / 2;
+
       ctx.drawImage(image, x, y, drawWidth, drawHeight);
+      ctx.fillStyle = 'rgba(4, 5, 8, 0.32)';
+      ctx.fillRect(0, 0, width, height);
     };
 
     const setMilestoneFromProgress = (progress: number) => {
@@ -89,13 +111,11 @@ function ScrollStory() {
     };
 
     const animate = () => {
-      const smoothing = 0.12;
+      const smoothing = 0.1;
       const target = progressTargetRef.current;
       progressCurrentRef.current += (target - progressCurrentRef.current) * smoothing;
 
-      if (Math.abs(target - progressCurrentRef.current) < 0.0005) {
-        progressCurrentRef.current = target;
-      }
+      if (Math.abs(target - progressCurrentRef.current) < 0.0005) progressCurrentRef.current = target;
 
       const frameIndex = Math.min(
         FRAME_COUNT,
@@ -116,9 +136,7 @@ function ScrollStory() {
       });
 
       const first = imagesRef.current[0];
-      if (first) {
-        first.onload = () => drawFrame(1);
-      }
+      if (first) first.onload = () => drawFrame(1);
     };
 
     preloadFrames();
@@ -140,7 +158,7 @@ function ScrollStory() {
     <section id="story" className="scroll-sequence" ref={sectionRef}>
       <div className="pin-wrap">
         <canvas ref={canvasRef} aria-label="Scroll-animated project sequence" />
-        <div className="overlay-copy">
+        <div className="overlay-copy" style={{ '--accent-tone': activeMilestone.tone } as CSSProperties}>
           <span className="progress-chip">Scene {milestoneIndex + 1}/4</span>
           <h2>{activeMilestone.title}</h2>
           <p>{activeMilestone.text}</p>
