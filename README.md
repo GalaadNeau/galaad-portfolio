@@ -1,28 +1,36 @@
-# Galaad Neau — Portfolio Prototype
+# Galaad Neau — Portfolio (React + TypeScript)
 
-Modern one-page portfolio prototype with cinematic scroll storytelling (inspired by theycallmegiulio style):
-- smooth page scrolling
-- long scroll section with **pinned canvas**
-- frame-by-frame scrub tied to scroll progress
-- overlay milestone copy that updates as the user scrolls
+Technical one-page portfolio rebuilt from a plain HTML/CSS/JS prototype into a modern React stack.
+
+## Highlights
+- Vite + React + TypeScript architecture
+- Componentized structure:
+  - `App`
+  - `Hero`
+  - `ScrollStory`
+  - `Projects`
+  - `Contact`
+- Cinematic scroll-driven frame-by-frame canvas sequence
+- Smoothed scroll interpolation using `requestAnimationFrame` + easing
+- Milestone overlay with active scene indicator
+- Existing generated assets preserved under `public/assets`
 
 ## Stack
-- Vite (vanilla JS)
-- HTML/CSS/JS
-- ffmpeg (for local asset generation)
+- Vite 5
+- React 18
+- TypeScript 5
+- ffmpeg (optional, only for regenerating placeholder assets)
 
 ## Project Structure
-- `index.html` — page structure and sections
-- `src/styles.css` — visual system, sticky sequence section, responsive layout
-- `src/main.js` — frame loading, canvas drawing, scroll progress logic, milestones
-- `scripts/generate-assets.sh` — generates legal placeholder video + extracts frames
+- `src/App.tsx` — page composition and fixed header/nav
+- `src/components/Hero.tsx` — intro section
+- `src/components/ScrollStory.tsx` — frame preload, canvas rendering, smooth scroll interpolation, milestone logic
+- `src/components/Projects.tsx` — project/technical focus section
+- `src/components/Contact.tsx` — contact block
+- `src/styles.css` — global styling and responsive layout
 - `public/assets/video/galaad-placeholder.mp4` — generated source video
-- `public/assets/frames/frame-0001.jpg ... frame-0072.jpg` — scrub frames used by canvas
-
-## Asset Provenance (Legal)
-All media assets are generated locally using ffmpeg’s built-in test source (`testsrc2`) and text overlays.
-- No copyrighted third-party footage is included.
-- The generated placeholder video and derived frames are safe to use as prototype assets.
+- `public/assets/frames/frame-0001.jpg ... frame-0072.jpg` — scrub frames for canvas
+- `scripts/generate-assets.sh` — regenerate legal placeholder media locally
 
 ## Run Locally
 ```bash
@@ -30,16 +38,35 @@ cd /root/.openclaw/workspace/repos/galaad-portfolio
 npm install
 npm run dev
 ```
-Then open the local Vite URL (usually `http://localhost:5173`).
+Open the local Vite URL (typically `http://localhost:5173`).
 
 ## Build
 ```bash
 npm run build
 ```
-Output is generated in `dist/`.
+Production output is generated in `dist/`.
 
-## Re-generate Video + Frames
-If you want to recreate assets:
+## Deploy
+This is a static site and can be deployed on Vercel, Netlify, Cloudflare Pages, GitHub Pages, etc.
+
+### Generic flow
+1. `npm install`
+2. `npm run build`
+3. Deploy the `dist/` directory
+
+### Example (Netlify CLI)
+```bash
+npm run build
+npx netlify deploy --prod --dir=dist
+```
+
+### Example (Vercel CLI)
+```bash
+npm run build
+npx vercel --prod
+```
+
+## Re-generate Placeholder Video + Frames (Optional)
 ```bash
 npm run generate:video
 ```
@@ -47,10 +74,6 @@ This overwrites:
 - `public/assets/video/galaad-placeholder.mp4`
 - `public/assets/frames/frame-*.jpg`
 
-## Deploy
-Any static host works (Vercel, Netlify, Cloudflare Pages, GitHub Pages):
-1. Run `npm run build`
-2. Deploy the `dist/` folder
-
-## Notes
-This is a prototype intended for direction/style validation. Next iterations can replace generated frames with real showreel footage (properly licensed) while keeping the same scroll-scrub architecture.
+## Asset Provenance (Legal)
+All bundled media assets are generated locally from ffmpeg’s built-in test source (`testsrc2`) plus text overlays.
+No copyrighted third-party footage is included in this prototype repository.
