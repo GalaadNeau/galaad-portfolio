@@ -1,0 +1,96 @@
+const frameCount = 72;
+const framePath = (index) => `/assets/frames/frame-${String(index).padStart(4, '0')}.jpg`;
+
+const milestones = [
+  { at: 0.0, title: 'Act I — Spark', text: 'From rough ideas to clear strategic direction.' },
+  { at: 0.28, title: 'Act II — Build', text: 'Design systems and prototypes align product and brand.' },
+  { at: 0.58, title: 'Act III — Ship', text: 'Launch polished, performant experiences users remember.' },
+  { at: 0.82, title: 'Act IV — Scale', text: 'Iterate with data, refine craft, and compound outcomes.' }
+];
+
+const canvas = document.getElementById('sequence-canvas');
+const ctx = canvas.getContext('2d');
+const section = document.querySelector('.scroll-sequence');
+const titleNode = document.getElementById('milestone-title');
+const textNode = document.getElementById('milestone-text');
+
+const images = [];
+let loaded = 0;
+let currentFrame = 1;
+
+function resizeCanvas() {
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const width = window.innerWidth;
+  const height = window.innerHeight;
+  canvas.width = width * dpr;
+  canvas.height = height * dpr;
+  canvas.style.width = `${width}px`;
+  canvas.style.height = `${height}px`;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  drawFrame(currentFrame);
+}
+
+function drawFrame(index) {
+  const img = images[index - 1];
+  if (!img || !img.complete) return;
+
+  currentFrame = index;
+  const cw = window.innerWidth;
+  const ch = window.innerHeight;
+
+  ctx.clearRect(0, 0, cw, ch);
+
+  const imgAspect = img.width / img.height;
+  const canvasAspect = cw / ch;
+
+  let drawWidth;
+  let drawHeight;
+
+  if (imgAspect > canvasAspect) {
+    drawHeight = ch;
+    drawWidth = drawHeight * imgAspect;
+  } else {
+    drawWidth = cw;
+    drawHeight = drawWidth / imgAspect;
+  }
+
+  const x = (cw - drawWidth) / 2;
+  const y = (ch - drawHeight) / 2;
+  ctx.drawImage(img, x, y, drawWidth, drawHeight);
+}
+
+function updateMilestone(progress) {
+  let active = milestones[0];
+  for (const milestone of milestones) {
+    if (progress >= milestone.at) active = milestone;
+  }
+  titleNode.textContent = active.title;
+  textNode.textContent = active.text;
+}
+
+function updateOnScroll() {
+  const rect = section.getBoundingClientRect();
+  const scrollable = section.offsetHeight - window.innerHeight;
+  const progress = Math.min(Math.max(-rect.top / scrollable, 0), 1);
+  const frameIndex = Math.min(frameCount, Math.max(1, Math.ceil(progress * frameCount)));
+  drawFrame(frameIndex);
+  updateMilestone(progress);
+}
+
+for (let i = 1; i <= frameCount; i++) {
+  const img = new Image();
+  img.src = framePath(i);
+  img.onload = () => {
+    loaded += 1;
+    if (loaded === 1) {
+      drawFrame(1);
+    }
+  };
+  images.push(img);
+}
+
+window.addEventListener('resize', resizeCanvas);
+window.addEventListener('scroll', updateOnScroll, { passive: true });
+
+resizeCanvas();
+updateOnScroll();

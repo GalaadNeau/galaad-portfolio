@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Galaad Neau — Portfolio Prototype</title>
+    <meta
+      name="description"
+      content="Prototype portfolio for Galaad Neau with scroll-scrubbed cinematic section."
+    />
+    <link rel="stylesheet" href="/src/styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="logo">Galaad Neau</div>
+      <nav>
+        <a href="#work">Work</a>
+        <a href="#story">Story</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero" id="work">
+        <p class="eyebrow">Creative Technologist · Product Builder</p>
+        <h1>Crafting product stories that move with intention.</h1>
+        <p>
+          A modern one-page portfolio prototype inspired by cinematic scroll storytelling.
+        </p>
+      </section>
+
+      <section id="story" class="scroll-sequence">
+        <div class="pin-wrap">
+          <canvas id="sequence-canvas" aria-label="Scroll-animated project sequence"></canvas>
+          <div class="overlay-copy">
+            <h2 id="milestone-title">Act I — Spark</h2>
+            <p id="milestone-text">From rough ideas to clear strategic direction.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="content">
+        <article>
+          <h3>Selected Focus</h3>
+          <p>
+            Brand systems, product narratives, and high-performance frontend experiences.
+          </p>
+        </article>
+        <article id="contact">
+          <h3>Let’s Build</h3>
+          <p>Available for product design and full-stack prototyping collaborations.</p>
+        </article>
+      </section>
+    </main>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
